@@ -22,8 +22,9 @@ const JobSearch = () => {
   const [viewMode, setViewMode] = useState('list');
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showJobAlert, setShowJobAlert] = useState(true);
 
-  // Mock job data
+  // Enhanced mock job data with more realistic content
   const mockJobs = [
     {
       id: 1,
@@ -35,7 +36,9 @@ const JobSearch = () => {
         founded: "2015",
         industry: "Technology",
         funding: "Series B",
-        description: "TechCorp is a leading technology company focused on innovation and excellence."
+        description: "TechCorp is a leading technology company focused on innovation and excellence.",
+        rating: 4.2,
+        reviews: 156
       },
       location: "San Francisco, CA",
       salary: { min: 120, max: 160 },
@@ -45,7 +48,9 @@ const JobSearch = () => {
       skills: ["React", "TypeScript", "Node.js", "AWS", "GraphQL"],
       description: `We are seeking a talented Senior React Developer to join our dynamic team. You will be responsible for building scalable web applications using modern React ecosystem and best practices.`,
       postedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      matchScore: 92
+      matchScore: 92,
+      applications: 24,
+      urgency: "high"
     },
     {
       id: 2,
@@ -56,7 +61,9 @@ const JobSearch = () => {
         size: "50-100",
         founded: "2020",
         industry: "FinTech",
-        funding: "Series A"
+        funding: "Series A",
+        rating: 4.5,
+        reviews: 89
       },
       location: "New York, NY",
       salary: { min: 100, max: 140 },
@@ -66,7 +73,9 @@ const JobSearch = () => {
       skills: ["JavaScript", "Python", "React", "Django", "PostgreSQL"],
       description: `Join our fast-growing fintech startup as a Full Stack Engineer. You'll work on cutting-edge financial products that impact millions of users.`,
       postedDate: new Date(Date.now() - 5 * 60 * 60 * 1000),
-      matchScore: 85
+      matchScore: 85,
+      applications: 18,
+      urgency: "medium"
     },
     {
       id: 3,
@@ -77,7 +86,9 @@ const JobSearch = () => {
         size: "10-50",
         founded: "2018",
         industry: "Design",
-        funding: "Bootstrapped"
+        funding: "Bootstrapped",
+        rating: 4.8,
+        reviews: 234
       },
       location: "Remote",
       salary: { min: 80, max: 110 },
@@ -87,7 +98,9 @@ const JobSearch = () => {
       skills: ["React", "CSS", "JavaScript", "Figma", "Tailwind"],
       description: `We're looking for a creative Frontend Developer to bring beautiful designs to life with clean, efficient code.`,
       postedDate: new Date(Date.now() - 12 * 60 * 60 * 1000),
-      matchScore: 78
+      matchScore: 78,
+      applications: 31,
+      urgency: "low"
     },
     {
       id: 4,
@@ -98,7 +111,9 @@ const JobSearch = () => {
         size: "200-500",
         founded: "2016",
         industry: "Mobile",
-        funding: "Series C"
+        funding: "Series C",
+        rating: 4.1,
+        reviews: 203
       },
       location: "Austin, TX",
       salary: { min: 95, max: 130 },
@@ -108,7 +123,9 @@ const JobSearch = () => {
       skills: ["React Native", "JavaScript", "iOS", "Android", "Firebase"],
       description: `Build amazing mobile experiences with React Native. Join our team of mobile experts creating the next generation of apps.`,
       postedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      matchScore: 88
+      matchScore: 88,
+      applications: 15,
+      urgency: "high"
     },
     {
       id: 5,
@@ -119,7 +136,9 @@ const JobSearch = () => {
         size: "20-50",
         founded: "2019",
         industry: "Agency",
-        funding: "Bootstrapped"
+        funding: "Bootstrapped",
+        rating: 3.9,
+        reviews: 67
       },
       location: "Chicago, IL",
       salary: { min: 55, max: 75 },
@@ -129,7 +148,9 @@ const JobSearch = () => {
       skills: ["HTML", "CSS", "JavaScript", "React", "WordPress"],
       description: `Perfect opportunity for a junior developer to grow their skills in a supportive agency environment.`,
       postedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      matchScore: 65
+      matchScore: 65,
+      applications: 42,
+      urgency: "medium"
     },
     {
       id: 6,
@@ -140,7 +161,9 @@ const JobSearch = () => {
         size: "1000+",
         founded: "2010",
         industry: "Enterprise",
-        funding: "Public"
+        funding: "Public",
+        rating: 4.3,
+        reviews: 445
       },
       location: "Seattle, WA",
       salary: { min: 150, max: 200 },
@@ -150,7 +173,9 @@ const JobSearch = () => {
       skills: ["React", "TypeScript", "Microservices", "Kubernetes", "Leadership"],
       description: `Lead our frontend architecture team in building scalable enterprise solutions used by Fortune 500 companies.`,
       postedDate: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      matchScore: 95
+      matchScore: 95,
+      applications: 8,
+      urgency: "high"
     }
   ];
 
@@ -259,61 +284,105 @@ const JobSearch = () => {
   const paginatedJobs = filteredJobs.slice((currentPage - 1) * 20, currentPage * 20);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <Header />
       <SearchHeader />
       
-      <div className="max-w-7xl mx-auto">
-        <div className="flex">
-          {/* Desktop Sidebar */}
+      {/* Enhanced Job Alert Banner */}
+      {showJobAlert && (
+        <div className="bg-gradient-to-r from-primary/10 to-accent/10 border-b border-primary/20">
+          <div className="container-app py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                  <Icon name="Bell" size={16} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">New jobs matching your profile</p>
+                  <p className="text-xs text-muted-foreground">Get instant notifications for relevant opportunities</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm" onClick={() => setShowJobAlert(false)}>
+                  Dismiss
+                </Button>
+                <Button size="sm">
+                  <Icon name="Bell" size={14} className="mr-2" />
+                  Create Alert
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="container-app py-6">
+        <div className="flex gap-6">
+          {/* Enhanced Desktop Sidebar */}
           <div className="hidden lg:block w-80 flex-shrink-0">
-            <FilterSidebar
-              isOpen={true}
-              onClose={() => {}}
-              filters={filters}
-              onFiltersChange={setFilters}
-              onClearFilters={() => setFilters({})}
-            />
+            <div className="sticky top-24">
+              <FilterSidebar
+                isOpen={true}
+                onClose={() => {}}
+                filters={filters}
+                onFiltersChange={setFilters}
+                onClearFilters={() => setFilters({})}
+              />
+            </div>
           </div>
 
-          {/* Main Content */}
+          {/* Enhanced Main Content */}
           <div className="flex-1 min-w-0">
-            {/* Search Filters */}
-            <SearchFilters
-              onFilterChange={setFilters}
-              activeFilters={filters}
-            />
+            {/* Enhanced Search Filters */}
+            <div className="mb-6">
+              <SearchFilters
+                onFilterChange={setFilters}
+                activeFilters={filters}
+              />
+            </div>
 
-            {/* Job List Header */}
-            <JobListHeader
-              totalJobs={filteredJobs.length}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-              onRefresh={handleRefresh}
-              isLoading={isLoading}
-            />
+            {/* Enhanced Job List Header */}
+            <div className="mb-6">
+              <JobListHeader
+                totalJobs={filteredJobs.length}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                onRefresh={handleRefresh}
+                isLoading={isLoading}
+              />
+            </div>
 
-            {/* Job Listings */}
-            <div className="p-6">
+            {/* Enhanced Job Listings */}
+            <div className="space-y-6">
               {filteredJobs.length === 0 ? (
-                <div className="text-center py-12">
-                  <Icon name="Search" size={48} className="text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">No jobs found</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Try adjusting your filters or search terms to find more opportunities.
+                <div className="text-center py-16 bg-card rounded-xl border border-border">
+                  <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Icon name="Search" size={32} className="text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">No jobs found</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Try adjusting your filters or search terms to find more opportunities that match your preferences.
                   </p>
-                  <Button onClick={() => setFilters({})}>
-                    Clear all filters
-                  </Button>
+                  <div className="flex items-center justify-center space-x-3">
+                    <Button onClick={() => setFilters({})} variant="outline">
+                      <Icon name="X" size={16} className="mr-2" />
+                      Clear all filters
+                    </Button>
+                    <Button>
+                      <Icon name="RefreshCw" size={16} className="mr-2" />
+                      Refresh results
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <>
+                  {/* Enhanced Job Grid */}
                   <div className={`grid gap-6 ${
-                    viewMode === 'grid' ?'grid-cols-1 xl:grid-cols-2' :'grid-cols-1'
+                    viewMode === 'grid' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1'
                   }`}>
                     {paginatedJobs.map((job) => (
                       <JobCard
@@ -327,13 +396,14 @@ const JobSearch = () => {
                     ))}
                   </div>
 
-                  {/* Pagination */}
+                  {/* Enhanced Pagination */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-center space-x-2 mt-8">
+                    <div className="flex items-center justify-center space-x-2 mt-12">
                       <Button
                         variant="outline"
                         onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                         disabled={currentPage === 1}
+                        className="px-4 py-2"
                       >
                         <Icon name="ChevronLeft" size={16} className="mr-2" />
                         Previous
@@ -348,6 +418,7 @@ const JobSearch = () => {
                               variant={currentPage === page ? "default" : "outline"}
                               size="sm"
                               onClick={() => setCurrentPage(page)}
+                              className="w-10 h-10"
                             >
                               {page}
                             </Button>
@@ -355,11 +426,12 @@ const JobSearch = () => {
                         })}
                         {totalPages > 5 && (
                           <>
-                            <span className="text-muted-foreground">...</span>
+                            <span className="text-muted-foreground px-2">...</span>
                             <Button
                               variant={currentPage === totalPages ? "default" : "outline"}
                               size="sm"
                               onClick={() => setCurrentPage(totalPages)}
+                              className="w-10 h-10"
                             >
                               {totalPages}
                             </Button>
@@ -371,12 +443,20 @@ const JobSearch = () => {
                         variant="outline"
                         onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                         disabled={currentPage === totalPages}
+                        className="px-4 py-2"
                       >
                         Next
                         <Icon name="ChevronRight" size={16} className="ml-2" />
                       </Button>
                     </div>
                   )}
+
+                  {/* Enhanced Results Summary */}
+                  <div className="text-center py-8 border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      Showing {((currentPage - 1) * 20) + 1} to {Math.min(currentPage * 20, filteredJobs.length)} of {filteredJobs.length} jobs
+                    </p>
+                  </div>
                 </>
               )}
             </div>
@@ -384,7 +464,7 @@ const JobSearch = () => {
         </div>
       </div>
 
-      {/* Mobile Filter Sidebar */}
+      {/* Enhanced Mobile Filter Sidebar */}
       <FilterSidebar
         isOpen={isFilterSidebarOpen}
         onClose={() => setIsFilterSidebarOpen(false)}
@@ -393,21 +473,21 @@ const JobSearch = () => {
         onClearFilters={() => setFilters({})}
       />
 
-      {/* Mobile Filter Button */}
+      {/* Enhanced Mobile Filter Button */}
       <Button
-        className="fixed bottom-6 right-6 lg:hidden z-40 shadow-elevated"
+        className="fixed bottom-6 right-6 lg:hidden z-40 shadow-elevated bg-primary hover:bg-primary/90 text-primary-foreground"
         onClick={() => setIsFilterSidebarOpen(true)}
       >
         <Icon name="Filter" size={16} className="mr-2" />
         Filters
         {Object.keys(filters).length > 0 && (
-          <span className="ml-2 px-2 py-1 bg-primary-foreground text-primary text-xs rounded-full">
+          <span className="ml-2 px-2 py-1 bg-primary-foreground text-primary text-xs rounded-full font-medium">
             {Object.keys(filters).length}
           </span>
         )}
       </Button>
 
-      {/* Job Quick View Modal */}
+      {/* Enhanced Job Quick View Modal */}
       <JobQuickView
         job={selectedJob}
         isOpen={isQuickViewOpen}
@@ -417,14 +497,19 @@ const JobSearch = () => {
         isSaved={selectedJob ? savedJobs.has(selectedJob.id) : false}
       />
 
-      {/* Job Alert Banner */}
-      <div className="fixed bottom-0 left-0 right-0 bg-primary text-primary-foreground p-4 lg:hidden">
+      {/* Enhanced Mobile Job Alert Banner */}
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground p-4 lg:hidden z-30 shadow-elevated">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Icon name="Bell" size={16} />
-            <span className="text-sm font-medium">Get notified of new jobs</span>
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+              <Icon name="Bell" size={16} />
+            </div>
+            <div>
+              <p className="text-sm font-medium">Get notified of new jobs</p>
+              <p className="text-xs opacity-90">Never miss relevant opportunities</p>
+            </div>
           </div>
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
             Create Alert
           </Button>
         </div>

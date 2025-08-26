@@ -15,14 +15,14 @@ const SearchHeader = () => {
   });
 
   const mockSuggestions = [
-    'React Developer',
-    'Frontend Engineer',
-    'Full Stack Developer',
-    'JavaScript Developer',
-    'Node.js Developer',
-    'Python Developer',
-    'DevOps Engineer',
-    'Data Scientist'
+    { text: 'React Developer', type: 'job', icon: 'Code' },
+    { text: 'Frontend Engineer', type: 'job', icon: 'Monitor' },
+    { text: 'Full Stack Developer', type: 'job', icon: 'Layers' },
+    { text: 'JavaScript Developer', type: 'job', icon: 'Code' },
+    { text: 'Node.js Developer', type: 'job', icon: 'Server' },
+    { text: 'Python Developer', type: 'job', icon: 'Code' },
+    { text: 'DevOps Engineer', type: 'job', icon: 'Settings' },
+    { text: 'Data Scientist', type: 'job', icon: 'BarChart3' }
   ];
 
   const experienceLevels = [
@@ -42,12 +42,20 @@ const SearchHeader = () => {
     { value: 'hybrid', label: 'Hybrid' }
   ];
 
+  const popularSearches = [
+    { text: 'Remote', icon: 'Globe', count: '2.3k' },
+    { text: 'Senior', icon: 'TrendingUp', count: '1.8k' },
+    { text: 'React', icon: 'Code', count: '4.1k' },
+    { text: 'Full-time', icon: 'Briefcase', count: '15.2k' },
+    { text: 'Startup', icon: 'Zap', count: '3.7k' }
+  ];
+
   useEffect(() => {
     if (searchQuery.length > 0) {
       const filtered = mockSuggestions.filter(suggestion =>
-        suggestion.toLowerCase().includes(searchQuery.toLowerCase())
+        suggestion.text.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setSuggestions(filtered.slice(0, 5));
+      setSuggestions(filtered.slice(0, 6));
       setShowSuggestions(true);
     } else {
       setShowSuggestions(false);
@@ -61,9 +69,9 @@ const SearchHeader = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setSearchQuery(suggestion);
+    setSearchQuery(suggestion.text);
     setShowSuggestions(false);
-    handleSearch(suggestion);
+    handleSearch(suggestion.text);
   };
 
   const handleFilterChange = (filterType, value) => {
@@ -85,63 +93,80 @@ const SearchHeader = () => {
   const activeFiltersCount = Object.values(filters).filter(value => value !== '').length;
 
   return (
-    <div className="bg-card border-b border-border shadow-soft">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        {/* Main Search Bar */}
+    <div className="bg-gradient-to-r from-card via-card to-muted/30 border-b border-border shadow-soft">
+      <div className="container-app py-6">
+        {/* Enhanced Main Search Bar */}
         <div className="relative">
           <div className="flex items-center space-x-4">
-            {/* Search Input */}
+            {/* Enhanced Search Input */}
             <div className="flex-1 relative">
-              <Icon 
-                name="Search" 
-                size={20} 
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
-              />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Search for jobs, companies, or skills..."
-                className="w-full pl-12 pr-4 py-3 text-base bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-smooth"
-              />
+              <div className="relative">
+                <Icon 
+                  name="Search" 
+                  size={20} 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" 
+                />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  onFocus={() => searchQuery.length > 0 && setShowSuggestions(true)}
+                  placeholder="Search for jobs, companies, or skills..."
+                  className="w-full pl-12 pr-4 py-4 text-base bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Icon name="X" size={16} />
+                  </button>
+                )}
+              </div>
               
-              {/* Search Suggestions */}
+              {/* Enhanced Search Suggestions */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-elevated z-50">
-                  {suggestions.map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="w-full px-4 py-3 text-left text-sm text-foreground hover:bg-muted transition-smooth first:rounded-t-lg last:rounded-b-lg"
-                    >
-                      <Icon name="Search" size={16} className="inline mr-3 text-muted-foreground" />
-                      {suggestion}
-                    </button>
-                  ))}
+                <div className="absolute top-full left-0 right-0 mt-2 bg-popover border border-border rounded-xl shadow-elevated z-50 overflow-hidden">
+                  <div className="p-2">
+                    <div className="text-xs font-medium text-muted-foreground px-3 py-2 uppercase tracking-wide">
+                      Popular Searches
+                    </div>
+                    {suggestions.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="w-full px-3 py-3 text-left text-sm text-foreground hover:bg-muted transition-colors rounded-lg flex items-center space-x-3"
+                      >
+                        <Icon name={suggestion.icon} size={16} className="text-muted-foreground flex-shrink-0" />
+                        <span className="flex-1">{suggestion.text}</span>
+                        <Icon name="ArrowRight" size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Search Button */}
+            {/* Enhanced Search Button */}
             <Button 
               onClick={() => handleSearch()}
-              className="px-8 py-3"
+              className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200 rounded-xl"
             >
               <Icon name="Search" size={16} className="mr-2" />
               Search
             </Button>
 
-            {/* Advanced Filters Toggle */}
+            {/* Enhanced Advanced Filters Toggle */}
             <Button
               variant="outline"
               onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className="relative px-4 py-3"
+              className="relative px-6 py-4 border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 rounded-xl"
             >
               <Icon name="Filter" size={16} className="mr-2" />
               Filters
               {activeFiltersCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 h-6 w-6 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center font-bold shadow-sm">
                   {activeFiltersCount}
                 </span>
               )}
@@ -149,13 +174,13 @@ const SearchHeader = () => {
           </div>
         </div>
 
-        {/* Advanced Filters Panel */}
+        {/* Enhanced Advanced Filters Panel */}
         {isAdvancedOpen && (
-          <div className="mt-4 p-4 bg-muted rounded-lg border border-border">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Location Filter */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Location</label>
+          <div className="mt-6 p-6 bg-muted/50 rounded-xl border border-border backdrop-blur-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Enhanced Location Filter */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground">Location</label>
                 <div className="relative">
                   <Icon 
                     name="MapPin" 
@@ -167,18 +192,18 @@ const SearchHeader = () => {
                     value={filters.location}
                     onChange={(e) => handleFilterChange('location', e.target.value)}
                     placeholder="City, state, or remote"
-                    className="w-full pl-10 pr-3 py-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-3 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                   />
                 </div>
               </div>
 
-              {/* Experience Level */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Experience Level</label>
+              {/* Enhanced Experience Level */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground">Experience Level</label>
                 <select
                   value={filters.experience}
                   onChange={(e) => handleFilterChange('experience', e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-3 py-3 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 >
                   {experienceLevels.map((level) => (
                     <option key={level.value} value={level.value}>
@@ -188,13 +213,13 @@ const SearchHeader = () => {
                 </select>
               </div>
 
-              {/* Job Type */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Job Type</label>
+              {/* Enhanced Job Type */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground">Job Type</label>
                 <select
                   value={filters.jobType}
                   onChange={(e) => handleFilterChange('jobType', e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-3 py-3 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 >
                   {jobTypes.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -204,9 +229,9 @@ const SearchHeader = () => {
                 </select>
               </div>
 
-              {/* Salary Range */}
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Salary Range</label>
+              {/* Enhanced Salary Range */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-foreground">Salary Range</label>
                 <div className="relative">
                   <Icon 
                     name="DollarSign" 
@@ -218,21 +243,23 @@ const SearchHeader = () => {
                     value={filters.salary}
                     onChange={(e) => handleFilterChange('salary', e.target.value)}
                     placeholder="e.g., 80k-120k"
-                    className="w-full pl-10 pr-3 py-2 text-sm bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-3 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Filter Actions */}
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+            {/* Enhanced Filter Actions */}
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-border">
               <div className="flex items-center space-x-4">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={clearFilters}
                   disabled={activeFiltersCount === 0}
+                  className="hover:bg-destructive/10 hover:border-destructive/50 hover:text-destructive transition-colors"
                 >
+                  <Icon name="X" size={14} className="mr-2" />
                   Clear Filters
                 </Button>
                 <span className="text-sm text-muted-foreground">
@@ -242,28 +269,34 @@ const SearchHeader = () => {
               <Button
                 size="sm"
                 onClick={() => handleSearch()}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-200"
               >
+                <Icon name="Search" size={14} className="mr-2" />
                 Apply Filters
               </Button>
             </div>
           </div>
         )}
 
-        {/* Quick Filter Tags */}
-        <div className="flex items-center space-x-2 mt-4">
-          <span className="text-sm text-muted-foreground">Popular:</span>
-          {['Remote', 'Senior', 'React', 'Full-time', 'Startup'].map((tag) => (
-            <button
-              key={tag}
-              onClick={() => {
-                setSearchQuery(tag);
-                handleSearch(tag);
-              }}
-              className="px-3 py-1 text-xs bg-muted text-muted-foreground rounded-full hover:bg-primary hover:text-primary-foreground transition-smooth"
-            >
-              {tag}
-            </button>
-          ))}
+        {/* Enhanced Popular Searches */}
+        <div className="flex items-center space-x-4 mt-6">
+          <span className="text-sm font-medium text-muted-foreground">Popular:</span>
+          <div className="flex items-center space-x-2">
+            {popularSearches.map((search) => (
+              <button
+                key={search.text}
+                onClick={() => {
+                  setSearchQuery(search.text);
+                  handleSearch(search.text);
+                }}
+                className="group flex items-center space-x-2 px-4 py-2 text-sm bg-muted/50 text-muted-foreground rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-200 border border-transparent hover:border-primary/20"
+              >
+                <Icon name={search.icon} size={14} />
+                <span>{search.text}</span>
+                <span className="text-xs opacity-60 group-hover:opacity-100">{search.count}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

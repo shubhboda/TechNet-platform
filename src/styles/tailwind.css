@@ -54,6 +54,44 @@
     --color-error-foreground: #FFFFFF; /* white */
   }
 
+  .dark {
+    --color-background: #0B1220; /* slate-950-ish */
+    --color-foreground: #E2E8F0; /* slate-200 */
+    --color-border: #1F2937; /* slate-800 */
+    --color-input: #111827; /* slate-900 */
+    --color-ring: #60A5FA; /* blue-400 */
+
+    --color-card: #0F172A; /* slate-900 */
+    --color-card-foreground: #E2E8F0;
+
+    --color-popover: #0F172A;
+    --color-popover-foreground: #E2E8F0;
+
+    --color-muted: #111827; /* slate-900 */
+    --color-muted-foreground: #9CA3AF; /* gray-400 */
+
+    --color-primary: #60A5FA; /* blue-400 */
+    --color-primary-foreground: #0B1220;
+
+    --color-secondary: #475569; /* slate-600 */
+    --color-secondary-foreground: #E2E8F0;
+
+    --color-destructive: #F87171; /* red-400 */
+    --color-destructive-foreground: #0B1220;
+
+    --color-accent: #34D399; /* emerald-400 */
+    --color-accent-foreground: #0B1220;
+
+    --color-success: #10B981; /* emerald-500 */
+    --color-success-foreground: #0B1220;
+
+    --color-warning: #F59E0B; /* amber-500 */
+    --color-warning-foreground: #0B1220;
+
+    --color-error: #EF4444; /* red-500 */
+    --color-error-foreground: #0B1220;
+  }
+
   * {
     @apply border-border;
   }
@@ -79,5 +117,9 @@
   
   .transition-natural {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .container-app {
+    @apply max-w-7xl mx-auto px-6;
   }
 }
