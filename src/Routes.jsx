@@ -8,6 +8,7 @@ import Profile from "pages/profile";
 import Companies from "pages/companies";
 import NotFound from "pages/NotFound";
 import ResumeMaker from "pages/ResumeMaker";
+import Settings from "pages/settings";
 
 const Routes = () => {
   return (
@@ -20,6 +21,7 @@ const Routes = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/companies" element={<Companies />} />
       <Route path="/resume-maker" element={<ResumeMaker />} />
+      <Route path="/settings" element={<Settings />} />
       <Route path="*" element={<NotFound />} />
     </RouterRoutes>
   );
