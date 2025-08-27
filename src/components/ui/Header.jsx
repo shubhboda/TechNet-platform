@@ -16,6 +16,7 @@ const Header = () => {
     { label: 'Network', path: '/network', icon: 'Users' },
     { label: 'Profile', path: '/profile', icon: 'User' },
     { label: 'Companies', path: '/companies', icon: 'Building2' },
+    { label: 'Resume', path: '/resume-maker', icon: 'FileText' },
   ];
 
   const isActivePath = (path) => {
